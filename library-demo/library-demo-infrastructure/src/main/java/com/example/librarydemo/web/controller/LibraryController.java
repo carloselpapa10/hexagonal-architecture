@@ -1,9 +1,7 @@
 package com.example.librarydemo.web.controller;
 
-import com.example.librarydemo.application.library.handler.CreateLibraryCommandHandler;
-import com.example.librarydemo.domain.shared_kernel.BusinessException;
-import com.example.librarydemo.web.driver_adapter.LibraryOperationAdapter;
 import com.example.librarydemo.domain.library.command.CreateLibraryCommand;
+import de.triology.cb.CommandBus;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,23 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class LibraryController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(LibraryController.class);
-    private final LibraryOperationAdapter springMvcDriver;
 
     @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private CommandBus commandBus;
 
     @PostMapping
     public void insertLibrary(@RequestBody LibraryDto libraryDto) {
 
         LOGGER.info("Library Controller");
 
-        try{
-            CreateLibraryCommand command = modelMapper.map(libraryDto, CreateLibraryCommand.class);
-            springMvcDriver.executeOperation(new CreateLibraryCommandHandler(command));
-        }catch (BusinessException ex){
-            LOGGER.error(String.format("Business Exception : ", ex));
-        }
+        CreateLibraryCommand command = modelMapper.map(libraryDto, CreateLibraryCommand.class);
+        String result = commandBus.execute(command);
 
+        LOGGER.info(result);
     }
 }
 

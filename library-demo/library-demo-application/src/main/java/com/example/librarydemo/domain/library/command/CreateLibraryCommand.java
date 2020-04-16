@@ -1,5 +1,6 @@
 package com.example.librarydemo.domain.library.command;
 
+import de.triology.cb.Command;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CreateLibraryCommand {
+public class CreateLibraryCommand implements Command<String> {
 
     private String libraryId;
     private String libraryName;
