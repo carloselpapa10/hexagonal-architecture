@@ -1,6 +1,6 @@
 package com.example.librarydemo.web.controller;
 
-import com.example.librarydemo.application.library.usecase.CreateLibraryUseCase;
+import com.example.librarydemo.application.library.handler.CreateLibraryCommandHandler;
 import com.example.librarydemo.domain.shared_kernel.BusinessException;
 import com.example.librarydemo.web.driver_adapter.LibraryOperationAdapter;
 import com.example.librarydemo.domain.library.command.CreateLibraryCommand;
@@ -33,7 +33,7 @@ public class LibraryController {
 
         try{
             CreateLibraryCommand command = modelMapper.map(libraryDto, CreateLibraryCommand.class);
-            springMvcDriver.executeOperation(new CreateLibraryUseCase());
+            springMvcDriver.executeOperation(new CreateLibraryCommandHandler(command));
         }catch (BusinessException ex){
             LOGGER.error(String.format("Business Exception : ", ex));
         }

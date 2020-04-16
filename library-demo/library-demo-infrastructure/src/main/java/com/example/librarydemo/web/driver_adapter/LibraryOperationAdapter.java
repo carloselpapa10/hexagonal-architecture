@@ -9,9 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LibraryOperationAdapter {
 
-    private final ILibraryOperation driverPort;
-
-    public void executeOperation(Object command) throws BusinessException {
-        driverPort.execute(command);
+    public void executeOperation(ILibraryOperation libraryOperation) throws BusinessException {
+        libraryOperation.execute();
     }
 }
