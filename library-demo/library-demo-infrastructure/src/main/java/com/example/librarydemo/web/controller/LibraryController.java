@@ -1,6 +1,8 @@
 package com.example.librarydemo.web.controller;
 
-import com.example.librarydemo.web.driver_adapter.SpringMvcDriver;
+import com.example.librarydemo.application.library.usecase.CreateLibraryUseCase;
+import com.example.librarydemo.domain.shared_kernel.BusinessException;
+import com.example.librarydemo.web.driver_adapter.LibraryOperationAdapter;
 import com.example.librarydemo.domain.library.command.CreateLibraryCommand;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class LibraryController {
 
     private final Logger LOGGER = LoggerFactory.getLogger(LibraryController.class);
-    private final SpringMvcDriver springMvcDriver;
+    private final LibraryOperationAdapter springMvcDriver;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -29,8 +31,13 @@ public class LibraryController {
 
         LOGGER.info("Library Controller");
 
-        CreateLibraryCommand command = modelMapper.map(libraryDto, CreateLibraryCommand.class);
-        springMvcDriver.reactTo(command);
+        try{
+            CreateLibraryCommand command = modelMapper.map(libraryDto, CreateLibraryCommand.class);
+            springMvcDriver.executeOperation(new CreateLibraryUseCase());
+        }catch (BusinessException ex){
+            LOGGER.error(String.format("Business Exception : ", ex));
+        }
+
     }
 }
 
