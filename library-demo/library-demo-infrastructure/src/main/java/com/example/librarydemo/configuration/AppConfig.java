@@ -43,7 +43,7 @@ public class AppConfig {
 
     //use cases config
     @Bean
-    public CreateLibraryUseCase createLibraryUseCase(ISaveLibrary saveLibrary, ILibraryExists libraryExists) {
+    public ICreateLibrary createLibraryUseCase(ISaveLibrary saveLibrary, ILibraryExists libraryExists) {
         return new CreateLibraryUseCase(saveLibrary, libraryExists);
     }
 
