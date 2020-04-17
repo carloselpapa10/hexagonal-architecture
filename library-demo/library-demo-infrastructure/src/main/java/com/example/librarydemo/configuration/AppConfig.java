@@ -5,8 +5,12 @@ import com.example.librarydemo.application.library.port.ILibraryExists;
 import com.example.librarydemo.application.library.port.ISaveLibrary;
 import com.example.librarydemo.application.library.usecase.AddBookToLibraryUseCase;
 import com.example.librarydemo.application.library.usecase.CreateLibraryUseCase;
+import com.example.librarydemo.application.library.usecase.LoggingCreateLibraryUseCase;
+import com.example.librarydemo.application.library.usecase.PublishCreateLibraryUseCase;
+import com.example.librarydemo.application.shared.port.IPublish;
 import com.example.librarydemo.domain.library.port.ICreateLibrary;
 import com.example.librarydemo.persitence.driven_adapter.LibraryPersistenceAdapter;
+import com.example.librarydemo.persitence.driven_adapter.PublishAdapter;
 import com.example.librarydemo.persitence.repository.LibraryRepository;
 import de.triology.cb.CommandBus;
 import de.triology.cb.decorator.LoggingCommandBus;
@@ -35,6 +39,11 @@ public class AppConfig {
         return new LibraryPersistenceAdapter(libraryRepository);
     }
 
+    @Bean
+    public PublishAdapter publishAdapter(){
+        return new PublishAdapter();
+    }
+
     //command handlers config
     @Bean
     public CreateLibraryCommandHandler createLibraryCommandHandler(ICreateLibrary createLibrary){
@@ -42,9 +51,14 @@ public class AppConfig {
     }
 
     //use cases config
+//    @Bean
+//    public CreateLibraryUseCase createLibraryUseCase(ISaveLibrary saveLibrary, ILibraryExists libraryExists) {
+//        return new CreateLibraryUseCase(saveLibrary, libraryExists);
+//    }
+
     @Bean
-    public CreateLibraryUseCase createLibraryUseCase(ISaveLibrary saveLibrary, ILibraryExists libraryExists) {
-        return new CreateLibraryUseCase(saveLibrary, libraryExists);
+    public ICreateLibrary createLibraryUseCase(ISaveLibrary saveLibrary, ILibraryExists libraryExists, IPublish publish) {
+        return new PublishCreateLibraryUseCase(new LoggingCreateLibraryUseCase(new CreateLibraryUseCase(saveLibrary, libraryExists)), publish);
     }
 
     @Bean
